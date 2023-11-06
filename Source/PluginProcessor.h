@@ -44,6 +44,9 @@ namespace Params
         Solo_Low_Band,
         Solo_Mid_Band,
         Solo_High_Band,
+
+        Gain_In,
+        Gain_Out,
 	};
 
     inline const std::map<Names, juce::String>& GetParams()
@@ -52,27 +55,38 @@ namespace Params
         {
             {Low_Mid_Crossover_Freq, "Low-Mid Crossover Freq"},
             {Mid_High_Crossover_Freq, "Mid-High Crossover Freq"},
+
             {Threshold_Low_Band, "Threshold Low Band"},
             {Threshold_Mid_Band, "Threshold Mid Band"},
             {Threshold_High_Band, "Threshold High Band"},
+
             {Attack_Low_Band, "Attack Low Band"},
             {Attack_Mid_Band, "Attack Mid Band"},
             {Attack_High_Band, "Attack High Band"},
+
             {Release_Low_Band, "Release Low Band"},
             {Release_Mid_Band, "Release Mid Band"},
             {Release_High_Band, "Release High Band"},
+
             {Ratio_Low_Band, "Ratio Low Band"},
             {Ratio_Mid_Band, "Ratio Mid Band"},
             {Ratio_High_Band, "Ratio High Band"},
+
             {Bypassed_Low_Band, "Bypassed Low Band"},
             {Bypassed_Mid_Band, "Bypassed Mid Band"},
             {Bypassed_High_Band, "Bypassed High Band"},
+
             {Mute_Low_Band, "Mute Low Band"},
             {Mute_Mid_Band, "Mute Mid Band"},
             {Mute_High_Band, "Mute High Band"},
+
             {Solo_Low_Band, "Solo Low Band"},
             {Solo_Mid_Band, "Solo Mid Band"},
-            {Solo_High_Band, "Solo High Band"}
+            {Solo_High_Band, "Solo High Band"},
+
+            {Gain_In, "Gain In"},
+            {Gain_Out, "Gain Out"},
+
         };
 
         return params;
@@ -258,7 +272,21 @@ private:
 
     std::array<juce::AudioBuffer<float>, 3> filterBuffers;
 
+    juce::dsp::Gain<float> inputGain, outputGain;
+    juce::AudioParameterFloat* inputGainParam{ nullptr };
+    juce::AudioParameterFloat* outputGainParam{ nullptr };
 
+    template<typename T, typename U>
+    void applyGain(T& buffer, U& gain)
+    {
+        auto block = juce::dsp::AudioBlock<float>(buffer);
+		auto context = juce::dsp::ProcessContextReplacing<float>(block);
+		gain.process(context);
+    }
+
+    void updateState();
+
+    void splitBands(juce::AudioBuffer<float>& inputbuffer);
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleMBCAudioProcessor)
