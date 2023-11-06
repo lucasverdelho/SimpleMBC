@@ -42,9 +42,18 @@ SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
          jassert(param != nullptr);
     };
 
-    floatHelper(compressor.threshold, Names::Threshold_Low_Band);
-    floatHelper(compressor.attack, Names::Attack_Low_Band);
-    floatHelper(compressor.release, Names::Release_Low_Band);
+    floatHelper(lowBandComp.threshold,  Names::Threshold_Low_Band);
+    floatHelper(lowBandComp.attack,     Names::Attack_Low_Band);
+    floatHelper(lowBandComp.release,    Names::Release_Low_Band);
+
+    floatHelper(midBandComp.threshold,  Names::Threshold_Mid_Band);
+    floatHelper(midBandComp.attack,     Names::Attack_Mid_Band);
+    floatHelper(midBandComp.release,    Names::Release_Mid_Band);
+
+    floatHelper(highBandComp.threshold, Names::Threshold_High_Band);
+    floatHelper(highBandComp.attack,    Names::Attack_High_Band);
+    floatHelper(highBandComp.release,   Names::Release_High_Band);
+
 
     auto choiceHelper = [&apvts = this ->apvts, &params](auto& param, const auto& paramName)
     {
@@ -52,7 +61,9 @@ SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
         jassert(param != nullptr);
     };
 
-    choiceHelper(compressor.ratio, Names::Ratio_Low_Band);
+    choiceHelper(lowBandComp.ratio,     Names::Ratio_Low_Band);
+    choiceHelper(midBandComp.ratio,     Names::Ratio_Mid_Band);
+    choiceHelper(highBandComp.ratio,    Names::Ratio_High_Band);
 
     auto boolHelper = [&apvts = this ->apvts, &params](auto& param, const auto& paramName)
         {
@@ -60,10 +71,12 @@ SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
             jassert(param != nullptr);
         };
 
-    boolHelper(compressor.bypassed, Names::Bypassed_Low_Band);
+    boolHelper(lowBandComp.bypassed,    Names::Bypassed_Low_Band);
+    boolHelper(midBandComp.bypassed,    Names::Bypassed_Mid_Band);
+    boolHelper(highBandComp.bypassed,   Names::Bypassed_High_Band);
 
-    floatHelper(lowMidCrossover, Names::Low_Mid_Crossover_Freq);
-    floatHelper(midHighCrossover, Names::Mid_High_Crossover_Freq);
+    floatHelper(lowMidCrossover,    Names::Low_Mid_Crossover_Freq);
+    floatHelper(midHighCrossover,   Names::Mid_High_Crossover_Freq);
 
     LP1.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     LP2.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
@@ -78,6 +91,9 @@ SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
 SimpleMBCAudioProcessor::~SimpleMBCAudioProcessor()
 {
 }
+
+
+
 
 
 
@@ -198,7 +214,9 @@ void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     spec.numChannels = getTotalNumInputChannels();
     spec.sampleRate = sampleRate;
 
-    compressor.prepare(spec);
+    for (auto& comp : compressors)
+        comp.prepare(spec);
+	
 
     LP1.prepare(spec);
     HP1.prepare(spec);
@@ -298,6 +316,8 @@ void SimpleMBCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    for (auto& comp : compressors)
+		comp.updateCompressorSettings();
 
     //compressor.updateCompressorSettings();
     //compressor.process(buffer);
@@ -333,15 +353,13 @@ void SimpleMBCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
     HP2.process(fb2Context);
 
-
+    for (size_t i = 0; i < filterBuffers.size(); ++i)
+	{
+		compressors[i].process(filterBuffers[i]);
+	}
 
     auto numSamples = buffer.getNumSamples();
     auto numChannels = buffer.getNumChannels();
-
-    if (compressor.bypassed->get())
-    {
-        return;
-    }
 
     buffer.clear();
 
@@ -356,17 +374,6 @@ void SimpleMBCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     addFilterBand(buffer, filterBuffers[0]);
     addFilterBand(buffer, filterBuffers[1]);
     addFilterBand(buffer, filterBuffers[2]);
-
-
- //   if (!compressor.bypassed->get())
-	//{
- //       addFilterBand(buffer, filterBuffers[0]);
- //       addFilterBand(buffer, filterBuffers[1]);
-	//}
- //   else 
-	//{
-	//	addFilterBand(buffer, apBuffer);
-	//}
 
 
 
@@ -478,6 +485,18 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleMBCAudioProcessor::cre
                                                      NormalisableRange<float>(-60.0f, 12.f, 1.f, 1.f),
                                                      0));
 
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Threshold_Mid_Band),
+                                                     params.at(Names::Threshold_Mid_Band),
+													 NormalisableRange<float>(-60.0f, 12.f, 1.f, 1.f),
+													 0));
+
+
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Threshold_High_Band),
+													 params.at(Names::Threshold_High_Band),
+													 NormalisableRange<float>(-60.0f, 12.f, 1.f, 1.f),
+													 0));
+
+
 
     auto attackReleaseRange = NormalisableRange<float>(0.1f, 5000.f, 0.1f, 0.25f);
 
@@ -486,8 +505,30 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleMBCAudioProcessor::cre
 													 attackReleaseRange,
 													 50.f));
 
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Attack_Mid_Band),
+													 params.at(Names::Attack_Mid_Band),
+													 attackReleaseRange,
+													 50.f));
+
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Attack_High_Band),
+                                                     params.at(Names::Attack_High_Band),
+													 attackReleaseRange,
+													 50.f));
+
+
+
     layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Release_Low_Band),
 													 params.at(Names::Release_Low_Band),
+													 attackReleaseRange,
+													 50.f));
+
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Release_Mid_Band),
+													 params.at(Names::Release_Mid_Band),
+													 attackReleaseRange,
+													 50.f));
+
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Release_High_Band),
+													 params.at(Names::Release_High_Band),
 													 attackReleaseRange,
 													 50.f));
 
@@ -505,9 +546,30 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleMBCAudioProcessor::cre
 													  choiceStrings,
 													  0));
 
+    layout.add(std::make_unique<AudioParameterChoice>(params.at(Names::Ratio_Mid_Band),
+													  params.at(Names::Ratio_Mid_Band),
+													  choiceStrings,
+													  0));
+
+    layout.add(std::make_unique<AudioParameterChoice>(params.at(Names::Ratio_High_Band),
+                                                      params.at(Names::Ratio_High_Band),
+													  choiceStrings,
+													  0));
+
+
     layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Bypassed_Low_Band),
 													params.at(Names::Bypassed_Low_Band),
 													false));
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Bypassed_Mid_Band),
+													params.at(Names::Bypassed_Mid_Band),
+													false));
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Bypassed_High_Band),
+                                                    params.at(Names::Bypassed_High_Band),
+                                                    false));
+
+
 
 
     layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Low_Mid_Crossover_Freq),
