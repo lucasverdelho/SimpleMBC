@@ -10,6 +10,18 @@
 
 #include <JuceHeader.h>
 
+
+
+
+
+
+
+
+
+
+
+
+
 //==============================================================================
 /**
 */
@@ -23,6 +35,17 @@ public:
     SimpleMBCAudioProcessor();
     ~SimpleMBCAudioProcessor() override;
 
+
+
+
+
+
+
+
+
+
+
+
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -33,9 +56,31 @@ public:
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
+
+
+
+
+
+
+
+
+
+
+
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
+
+
+
+
+
+
+
+
+
+
+
 
     //==============================================================================
     const juce::String getName() const override;
@@ -45,6 +90,17 @@ public:
     bool isMidiEffect() const override;
     double getTailLengthSeconds() const override;
 
+
+
+
+
+
+
+
+
+
+
+
     //==============================================================================
     int getNumPrograms() override;
     int getCurrentProgram() override;
@@ -52,11 +108,51 @@ public:
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+
+    using APVTS = juce::AudioProcessorValueTreeState;
+
+    static APVTS::ParameterLayout createParameterLayout();
+
+    APVTS apvts { *this, nullptr, "Parameters", createParameterLayout() };
+
+
+
+
+
 private:
+
+    juce::dsp::Compressor<float> compressor;
+
+    juce::AudioParameterFloat* attack{ nullptr };
+    juce::AudioParameterFloat* release{ nullptr };
+    juce::AudioParameterFloat* threshold{ nullptr };
+    juce::AudioParameterChoice* ratio{ nullptr };
+    juce::AudioParameterBool* bypassed{ nullptr };
+
+
+
+
+
+
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleMBCAudioProcessor)
 };

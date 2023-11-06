@@ -9,6 +9,19 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 //==============================================================================
 SimpleMBCAudioProcessorEditor::SimpleMBCAudioProcessorEditor (SimpleMBCAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
@@ -21,6 +34,21 @@ SimpleMBCAudioProcessorEditor::SimpleMBCAudioProcessorEditor (SimpleMBCAudioProc
 SimpleMBCAudioProcessorEditor::~SimpleMBCAudioProcessorEditor()
 {
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==============================================================================
 void SimpleMBCAudioProcessorEditor::paint (juce::Graphics& g)
