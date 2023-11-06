@@ -105,22 +105,6 @@ SimpleMBCAudioProcessor::~SimpleMBCAudioProcessor()
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //==============================================================================
 const juce::String SimpleMBCAudioProcessor::getName() const
 {
@@ -190,21 +174,6 @@ void SimpleMBCAudioProcessor::changeProgramName (int index, const juce::String& 
 {
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //==============================================================================
 
 void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -242,33 +211,6 @@ void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 		buffer.setSize(spec.numChannels, samplesPerBlock);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 void SimpleMBCAudioProcessor::releaseResources()
@@ -442,28 +384,6 @@ void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //==============================================================================
 bool SimpleMBCAudioProcessor::hasEditor() const
 {
@@ -500,33 +420,6 @@ void SimpleMBCAudioProcessor::setStateInformation (const void* data, int sizeInB
 		apvts.replaceState(tree);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 juce::AudioProcessorValueTreeState::ParameterLayout SimpleMBCAudioProcessor::createParameterLayout()
