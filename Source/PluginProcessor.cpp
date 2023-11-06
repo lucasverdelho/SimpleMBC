@@ -62,6 +62,11 @@ SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
 
     boolHelper(compressor.bypassed, Names::Bypassed_Low_Band);
 
+    floatHelper(lowCrossover, Names::Low_Mid_Crossover_Freq);
+
+    LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
+    HP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
+
 
 }
 
@@ -190,8 +195,13 @@ void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 
     compressor.prepare(spec);
 
+    LP.prepare(spec);
+    HP.prepare(spec);
 
-
+    for (auto& buffer : filterBuffers)
+	{
+		buffer.setSize(spec.numChannels, samplesPerBlock);
+	}
 }
 
 
@@ -265,8 +275,43 @@ void SimpleMBCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         buffer.clear (i, 0, buffer.getNumSamples());
 
 
-    compressor.updateCompressorSettings();
-    compressor.process(buffer);
+    //compressor.updateCompressorSettings();
+    //compressor.process(buffer);
+
+    for (auto& fb : filterBuffers)
+    {
+         fb = buffer;
+	}
+        
+    auto cutoff = lowCrossover->get();
+    LP.setCutoffFrequency(cutoff);
+    HP.setCutoffFrequency(cutoff);
+
+    auto fb0Block = juce::dsp::AudioBlock<float>(filterBuffers[0]);
+    auto fb1Block = juce::dsp::AudioBlock<float>(filterBuffers[1]);
+
+    auto fb1Context = juce::dsp::ProcessContextReplacing<float>(fb1Block);
+    auto fb0Context = juce::dsp::ProcessContextReplacing<float>(fb0Block);
+
+    LP.process(fb0Context);
+    HP.process(fb1Context);
+
+
+    auto numSamples = buffer.getNumSamples();
+    auto numChannels = buffer.getNumChannels();
+
+    buffer.clear();
+
+    auto addFilterBand = [nc = numChannels, ns = numSamples](auto& inputBuffer, const auto& source)
+        {
+		for (auto channel = 0; channel < nc; ++channel)
+		{
+			inputBuffer.addFrom(channel, 0, source, channel, 0, ns);
+		}
+	};
+
+	addFilterBand(buffer, filterBuffers[0]);
+	addFilterBand(buffer, filterBuffers[1]);
 
 
 }
@@ -396,6 +441,17 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleMBCAudioProcessor::cre
     layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Bypassed_Low_Band),
 													params.at(Names::Bypassed_Low_Band),
 													false));
+
+
+    layout.add(std::make_unique<AudioParameterFloat>(params.at(Names::Low_Mid_Crossover_Freq),
+													 params.at(Names::Low_Mid_Crossover_Freq),
+													 NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),
+													 500.f));
+
+
+
+
+
 
 
     return layout;
