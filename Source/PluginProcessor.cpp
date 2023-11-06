@@ -75,6 +75,14 @@ SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
     boolHelper(midBandComp.bypassed,    Names::Bypassed_Mid_Band);
     boolHelper(highBandComp.bypassed,   Names::Bypassed_High_Band);
 
+    boolHelper(lowBandComp.mute,       Names::Mute_Low_Band);
+    boolHelper(midBandComp.mute,       Names::Mute_Mid_Band);
+    boolHelper(highBandComp.mute,      Names::Mute_High_Band);
+
+    boolHelper(lowBandComp.solo,      Names::Solo_Low_Band);
+    boolHelper(midBandComp.solo,      Names::Solo_Mid_Band);
+    boolHelper(highBandComp.solo,     Names::Solo_High_Band);
+
     floatHelper(lowMidCrossover,    Names::Low_Mid_Crossover_Freq);
     floatHelper(midHighCrossover,   Names::Mid_High_Crossover_Freq);
 
@@ -371,9 +379,45 @@ void SimpleMBCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 		}
 	};
 
-    addFilterBand(buffer, filterBuffers[0]);
+
+
+    // If any of the band is soloed, then only add the soloed bands to the output buffer
+    // else if none of the bands are soloed, then add all the non muted bands to the output buffer
+
+    auto bandsAreSoloed = false;
+    for (auto& comp : compressors)
+    {
+        if (comp.solo->get())
+        {
+            bandsAreSoloed = true;
+            break;
+        }
+    }
+
+    if (bandsAreSoloed)
+    {
+        for (auto& comp : compressors)
+        {
+            if (comp.solo->get())
+            {
+				addFilterBand(buffer, filterBuffers[&comp - &compressors[0]]);
+			}
+		}
+	}
+    else
+    {
+        for (auto& comp : compressors)
+        {
+            if (!comp.mute->get())
+            {
+				addFilterBand(buffer, filterBuffers[&comp - &compressors[0]]);
+			}
+		}
+	}
+
+ /*   addFilterBand(buffer, filterBuffers[0]);
     addFilterBand(buffer, filterBuffers[1]);
-    addFilterBand(buffer, filterBuffers[2]);
+    addFilterBand(buffer, filterBuffers[2]);*/
 
 
 
@@ -568,7 +612,32 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleMBCAudioProcessor::cre
     layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Bypassed_High_Band),
                                                     params.at(Names::Bypassed_High_Band),
                                                     false));
+    
 
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Mute_Low_Band),
+                                                    params.at(Names::Mute_Low_Band),
+                                                    false));
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Mute_Mid_Band),
+                                                    params.at(Names::Mute_Mid_Band),
+                                                    false));
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Mute_High_Band),
+                                                    params.at(Names::Mute_High_Band),
+                                                    false));
+
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Solo_Low_Band),
+                                                    params.at(Names::Solo_Low_Band),
+                                                    false));
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Solo_Mid_Band),
+                                                    params.at(Names::Solo_Mid_Band),
+                                                    false));
+
+    layout.add(std::make_unique<AudioParameterBool>(params.at(Names::Solo_High_Band),
+                                                    params.at(Names::Solo_High_Band),
+                                                    false));
 
 
 
