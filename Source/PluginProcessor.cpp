@@ -10,16 +10,6 @@
 #include "PluginEditor.h"
 
 
-
-
-
-
-
-
-
-
-
-
 //==============================================================================
 SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -149,8 +139,7 @@ double SimpleMBCAudioProcessor::getTailLengthSeconds() const
 
 int SimpleMBCAudioProcessor::getNumPrograms()
 {
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
+    return 1; 
 }
 
 
@@ -178,9 +167,6 @@ void SimpleMBCAudioProcessor::changeProgramName (int index, const juce::String& 
 
 void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumInputChannels();
@@ -215,8 +201,7 @@ void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 
 void SimpleMBCAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -226,15 +211,10 @@ bool SimpleMBCAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
     juce::ignoreUnused (layouts);
     return true;
   #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
      && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
-    // This checks if the input layout matches the output layout
    #if ! JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
@@ -304,27 +284,20 @@ void SimpleMBCAudioProcessor::splitBands(juce::AudioBuffer<float>& inputbuffer)
 
 void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    // Ensure no denormal numbers in the audio processing
     juce::ScopedNoDenormals noDenormals;
 
-    // Get the total number of input and output channels
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // Clear unused output channels
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    // Update the processor's state
     updateState();
 
-    // Apply input gain to the audio buffer
     applyGain(buffer, inputGain);
 
-    // Split the audio buffer into bands
     splitBands(buffer);
 
-    // Process each band's compressor
     for (size_t i = 0; i < filterBuffers.size(); ++i)
     {
         compressors[i].process(filterBuffers[i]);
@@ -333,10 +306,8 @@ void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
     auto numSamples = buffer.getNumSamples();
     auto numChannels = buffer.getNumChannels();
 
-    // Clear the output buffer
     buffer.clear();
 
-    // Function to add the content of 'source' to 'inputBuffer'
     auto addFilterBand = [nc = numChannels, ns = numSamples](auto& inputBuffer, const auto& source)
         {
             for (auto channel = 0; channel < nc; ++channel)
@@ -345,7 +316,6 @@ void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
             }
         };
 
-    // Check if any of the bands are soloed
     auto bandsAreSoloed = false;
     for (auto& comp : compressors)
     {
@@ -379,7 +349,6 @@ void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
         }
     }
 
-    // Apply output gain to the final audio buffer
     applyGain(buffer, outputGain);
 }
 
@@ -387,23 +356,17 @@ void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
 //==============================================================================
 bool SimpleMBCAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return true;
 }
 
 juce::AudioProcessorEditor* SimpleMBCAudioProcessor::createEditor()
 {
-    //return new SimpleMBCAudioProcessorEditor (*this);
-
     return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
 void SimpleMBCAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-
     juce::MemoryOutputStream mos(destData, true);
     apvts.state.writeToStream(mos);
 
@@ -411,9 +374,6 @@ void SimpleMBCAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 
 void SimpleMBCAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
-
     auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
     if (tree.isValid())
 	{
