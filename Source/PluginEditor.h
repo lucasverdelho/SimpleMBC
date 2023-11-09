@@ -13,13 +13,97 @@
 
 // Colours from ableton dark theme
 
-#define header_mid_gray = juce::Colour(0xff484848)
-#define body_gray = juce::Colour(0xff373737)
-#define box_gray = juce::Colour(0xff444444)
-#define accent_orange = juce::Colour(0xfff39420)
-#define accent_blue = juce::Colour(0xff33bfdb)
+#define border_mid_gray juce::Colour(0xff484848)
+#define border_dark_gray juce::Colour(0xff141414)
+#define body_gray juce::Colour(0xff373737)
+#define box_gray juce::Colour(0xff444444)
+#define accent_orange juce::Colour(0xfff39420)
+#define accent_blue juce::Colour(0xff33bfdb)
 
 
+
+struct LookAndFeel : juce::LookAndFeel_V4
+{
+    void drawRotarySlider(juce::Graphics&,
+        int x, int y, int width, int height,
+        float sliderPosProportional,
+        float rotaryStartAngle,
+        float rotaryEndAngle,
+        juce::Slider&) override;
+
+    void drawToggleButton(juce::Graphics& g,
+        juce::ToggleButton& toggleButton,
+        bool shouldDrawButtonAsHighlighted,
+        bool shouldDrawButtonAsDown) override;
+};
+
+struct RotarySliderWithLabels : juce::Slider
+{
+    RotarySliderWithLabels(juce::RangedAudioParameter& rap, const juce::String& unitSuffix) :
+        juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+            juce::Slider::TextEntryBoxPosition::NoTextBox),
+        param(&rap),
+        suffix(unitSuffix)
+    {
+        setLookAndFeel(&lnf);
+    }
+
+    ~RotarySliderWithLabels()
+    {
+        setLookAndFeel(nullptr);
+    }
+
+    struct LabelPos
+    {
+        float pos;
+        juce::String label;
+    };
+
+    juce::Array<LabelPos> labels;
+
+    void paint(juce::Graphics& g) override;
+    juce::Rectangle<int> getSliderBounds() const;
+    int getTextHeight() const { return 14; }
+    juce::String getDisplayString() const;
+private:
+    LookAndFeel lnf;
+
+    juce::RangedAudioParameter* param;
+    juce::String suffix;
+};
+
+
+
+struct PowerButton : juce::ToggleButton { };
+
+
+struct AnalyzerButton : juce::ToggleButton
+{
+    void resized() override
+    {
+        auto bounds = getLocalBounds();
+        auto insetRect = bounds.reduced(4);
+
+        randomPath.clear();
+
+        juce::Random r;
+
+        randomPath.startNewSubPath(insetRect.getX(),
+            insetRect.getY() + insetRect.getHeight() * r.nextFloat());
+
+        for (auto x = insetRect.getX() + 1; x < insetRect.getRight(); x += 2)
+        {
+            randomPath.lineTo(x,
+                insetRect.getY() + insetRect.getHeight() * r.nextFloat());
+        }
+    }
+
+    juce::Path randomPath;
+};
+
+
+
+//==============================================================================
 struct Placeholder : juce::Component
 {
     Placeholder();
@@ -31,9 +115,44 @@ struct Placeholder : juce::Component
     juce::Colour customColour;
 };
 
+
+struct RotarySlider : juce::Slider
+{
+    RotarySlider() :
+        juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+            juce::Slider::TextEntryBoxPosition::NoTextBox)
+    {}
+};
+
+template<typename Attachment, typename APVTS, typename Params, typename ParamName, typename SliderType>
+void makeAttachment(std::unique_ptr<Attachment>& attachment, 
+                    APVTS& apvts, 
+                    const Params& params, 
+                    const ParamName& name, 
+                    SliderType& slider)
+{
+    attachment = std::make_unique<Attachment>(apvts, params.at(name), slider);
+}
+
+
+
+
 struct GlobalControls : juce::Component
 {
+    GlobalControls(juce::AudioProcessorValueTreeState& apvts);
+
     void paint(juce::Graphics& g) override;
+
+    void resized() override;
+
+private:
+    RotarySlider inGainSlider, lowMidXoverSlider, midHighXoverSlider, outGainSlider;
+
+    using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+    std::unique_ptr<Attachment> inGainAttachment, 
+                                lowMidXoverAttachment, 
+                                midHighXoverAttachment, 
+                                outGainAttachment;
 };
 
 
@@ -56,8 +175,8 @@ private:
     // access the processor object that created it.
     SimpleMBCAudioProcessor& audioProcessor;
 
-    Placeholder controlBar, analyzer, globalControls, bandControls;
-    GlobalControls globalControls;
+    Placeholder controlBar, analyzer, bandControls;
+    GlobalControls globalControls{ audioProcessor.apvts };
 
 
 
