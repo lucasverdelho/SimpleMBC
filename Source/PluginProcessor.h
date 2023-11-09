@@ -191,10 +191,6 @@ public:
 
     APVTS apvts { *this, nullptr, "Parameters", createParameterLayout() };
 
-
-
-
-
 private:
     std::array<CompressorBand, 3> compressors;
     CompressorBand& lowBandComp = compressors[0];

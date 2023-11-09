@@ -278,10 +278,6 @@ void SimpleMBCAudioProcessor::splitBands(juce::AudioBuffer<float>& inputbuffer)
 }
 
 
-
-
-
-
 void SimpleMBCAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -361,7 +357,8 @@ bool SimpleMBCAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* SimpleMBCAudioProcessor::createEditor()
 {
-    return new juce::GenericAudioProcessorEditor(*this);
+    //return new juce::GenericAudioProcessorEditor(*this);
+    return new SimpleMBCAudioProcessorEditor (*this);
 }
 
 //==============================================================================
