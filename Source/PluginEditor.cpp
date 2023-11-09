@@ -16,6 +16,31 @@ Placeholder::Placeholder()
     customColour = juce::Colour(r.nextInt(255), r.nextInt(255), r.nextInt(255));
 }
 
+//==============================================================================
+
+void GlobalControls::paint(juce::Graphics& g)
+{
+    using namespace juce;
+    auto bounds = getLocalBounds();
+
+    g.setColour(Colours::blueviolet);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //==============================================================================

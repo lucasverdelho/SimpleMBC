@@ -11,6 +11,15 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+// Colours from ableton dark theme
+
+#define header_mid_gray = juce::Colour(0xff484848)
+#define body_gray = juce::Colour(0xff373737)
+#define box_gray = juce::Colour(0xff444444)
+#define accent_orange = juce::Colour(0xfff39420)
+#define accent_blue = juce::Colour(0xff33bfdb)
+
+
 struct Placeholder : juce::Component
 {
     Placeholder();
@@ -21,6 +30,12 @@ struct Placeholder : juce::Component
 	}
     juce::Colour customColour;
 };
+
+struct GlobalControls : juce::Component
+{
+    void paint(juce::Graphics& g) override;
+};
+
 
 
 //==============================================================================
@@ -42,7 +57,7 @@ private:
     SimpleMBCAudioProcessor& audioProcessor;
 
     Placeholder controlBar, analyzer, globalControls, bandControls;
-
+    GlobalControls globalControls;
 
 
 
