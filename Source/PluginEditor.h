@@ -39,12 +39,15 @@ struct LookAndFeel : juce::LookAndFeel_V4
 
 struct RotarySliderWithLabels : juce::Slider
 {
-    RotarySliderWithLabels(juce::RangedAudioParameter& rap, const juce::String& unitSuffix) :
+    RotarySliderWithLabels(juce::RangedAudioParameter& rap, 
+                           const juce::String& unitSuffix,
+                           const juce::String& title) :
         juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
             juce::Slider::TextEntryBoxPosition::NoTextBox),
         param(&rap),
         suffix(unitSuffix)
     {
+        setName(title);
         setLookAndFeel(&lnf);
     }
 
@@ -144,7 +147,7 @@ juce::RangedAudioParameter& getParam(APVTS& apvts, const Params& params, const N
 }
 
 
-juce::String getValString(juce::RangedAudioParameter& param, bool getLow, juce::String suffix);
+juce::String getValString(const juce::RangedAudioParameter& param, bool getLow, juce::String suffix);
 
 
 template< typename Labels, typename ParamType, typename SuffixType>
@@ -154,9 +157,6 @@ void addLabelPairs(Labels& labels, const ParamType& param, const SuffixType& suf
     labels.add({ 0.f, getValString(param, true, suffix) });
     labels.add({ 1.f, getValString(param, false, suffix) });
 }
-
-
-
 
 
 struct GlobalControls : juce::Component

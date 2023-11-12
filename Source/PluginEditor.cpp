@@ -21,7 +21,7 @@ bool truncateKiloValue(T& value)
 }
 
 
-juce::String getValString(juce::RangedAudioParameter& param, bool getLow, juce::String suffix) 
+juce::String getValString(const juce::RangedAudioParameter& param, bool getLow, juce::String suffix) 
 {
     juce::String str;
 
@@ -32,6 +32,8 @@ juce::String getValString(juce::RangedAudioParameter& param, bool getLow, juce::
 
     if (useK)
         str << "k";
+
+    str << suffix;
 
     return str;
 }
@@ -156,6 +158,36 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
         g.strokePath(analyzerButton->randomPath, PathStrokeType(1.f));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //==============================================================================
 void RotarySliderWithLabels::paint(juce::Graphics& g)
 {
@@ -167,6 +199,16 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
     auto range = getRange();
 
     auto sliderBounds = getSliderBounds();
+
+    auto bounds = getLocalBounds();
+
+    g.setColour(accent_orange);
+
+    g.drawFittedText(getName(),
+                     bounds.removeFromTop(getTextHeight() + 2),
+                     juce::Justification::centredBottom,
+                     1);
+
 
     //    g.setColour(Colours::red);
     //    g.drawRect(getLocalBounds());
@@ -215,13 +257,15 @@ juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
 {
     auto bounds = getLocalBounds();
 
+    bounds.removeFromTop(getTextHeight() * 1.5);
+
     auto size = juce::jmin(bounds.getWidth(), bounds.getHeight());
 
-    size -= getTextHeight() * 2;
+    size -= getTextHeight() * 1.5;
     juce::Rectangle<int> r;
     r.setSize(size, size);
     r.setCentre(bounds.getCentreX(), 0);
-    r.setY(2);
+    r.setY(bounds.getY());
 
     return r;
 
@@ -262,6 +306,23 @@ juce::String RotarySliderWithLabels::getDisplayString() const
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //==============================================================================
 
 Placeholder::Placeholder()
@@ -269,6 +330,30 @@ Placeholder::Placeholder()
     juce::Random r;
     customColour = juce::Colour(r.nextInt(255), r.nextInt(255), r.nextInt(255));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==============================================================================
 
@@ -283,30 +368,41 @@ GlobalControls::GlobalControls(juce::AudioProcessorValueTreeState& apvts)
 	};
 
 
+    auto& gainInParam = getParamHelper(Names::Gain_In);
+    auto& lowMidXoverParam = getParamHelper(Names::Low_Mid_Crossover_Freq);
+    auto& midHighXoverParam = getParamHelper(Names::Mid_High_Crossover_Freq);
+    auto& gainOutParam = getParamHelper(Names::Gain_Out);
 
-    inGainSlider = std::make_unique<RSWL>(getParamHelper(Names::Gain_In), "dB");  
-    lowMidXoverSlider = std::make_unique<RSWL>(getParamHelper(Names::Low_Mid_Crossover_Freq), "Hz");
-    midHighXoverSlider = std::make_unique<RSWL>(getParamHelper(Names::Mid_High_Crossover_Freq), "Hz");
-    outGainSlider = std::make_unique<RSWL>(getParamHelper(Names::Gain_Out), "dB");
+
+    inGainSlider = std::make_unique<RSWL>(gainInParam, "dB", "Input Gain");
+    lowMidXoverSlider = std::make_unique<RSWL>(lowMidXoverParam, "Hz", "Low-Mid X-Over");
+    midHighXoverSlider = std::make_unique<RSWL>(midHighXoverParam, "Hz", "Mid-High X-Over");
+    outGainSlider = std::make_unique<RSWL>(gainOutParam, "dB", "Output Gain");
 
     auto makeAttachmentHelper = [&params, &apvts](auto& attachment, const auto& name, auto& slider)
-    {
-		makeAttachment(attachment, apvts, params, name, slider);
-	};
+        {
+            makeAttachment(attachment, apvts, params, name, slider);
+        };
 
-    makeAttachmentHelper(inGainAttachment, Names::Gain_In , *inGainSlider);
+    makeAttachmentHelper(inGainAttachment, Names::Gain_In, *inGainSlider);
     makeAttachmentHelper(lowMidXoverAttachment, Names::Low_Mid_Crossover_Freq, *lowMidXoverSlider);
     makeAttachmentHelper(midHighXoverAttachment, Names::Mid_High_Crossover_Freq, *midHighXoverSlider);
     makeAttachmentHelper(outGainAttachment, Names::Gain_Out, *outGainSlider);
+
+
+    // ADD LABELS TO SLIDERS MAY NOT INCLUDE THIS IN FINAL VERSION
+    //addLabelPairs(inGainSlider->labels,gainInParam, "dB");
+    //addLabelPairs(lowMidXoverSlider->labels, lowMidXoverParam, "Hz");
+    //addLabelPairs(midHighXoverSlider->labels, midHighXoverParam, "Hz");
+    //addLabelPairs(outGainSlider->labels, gainOutParam, "dB");
+
+
 
     addAndMakeVisible(*inGainSlider);
     addAndMakeVisible(*lowMidXoverSlider);
     addAndMakeVisible(*midHighXoverSlider);
     addAndMakeVisible(*outGainSlider);
 }
-
-
-
 
 
 void GlobalControls::paint(juce::Graphics& g)
