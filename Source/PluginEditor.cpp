@@ -306,11 +306,45 @@ juce::String RotarySliderWithLabels::getDisplayString() const
 
 
 
+void RotarySliderWithLabels::changeParam(juce::RangedAudioParameter* p)
+{
+	param = p;
+	repaint();
+}
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+//===================================================================================
+
+
+
+juce::String RatioSlider::getDisplayString() const
+{
+    auto choiceParam = dynamic_cast<juce::AudioParameterChoice*>(param);
+    jassert(choiceParam != nullptr);
+
+    auto currentChoice = choiceParam->getCurrentChoiceName();
+
+    if (currentChoice.contains(".0"))
+        currentChoice = currentChoice.dropLastCharacters(2);
+
+    currentChoice << ":1";
+
+    return currentChoice;
+}
 
 
 
@@ -351,20 +385,39 @@ Placeholder::Placeholder()
 
 //==============================================================================
 
-CompressorBandControls::CompressorBandControls(juce::AudioProcessorValueTreeState& apvts)
+CompressorBandControls::CompressorBandControls(juce::AudioProcessorValueTreeState& apv) :
+    apvts(apv), 
+    attackSlider(nullptr, "ms", "Attack"), 
+    releaseSlider(nullptr, "ms", "Release"),
+    thresholdSlider(nullptr, "dB", "Threshold"), 
+    ratioSlider(nullptr, "")
 {
 
     using namespace Params;
     const auto& params = GetParams();
 
-    auto getParamHelper = [&params, &apvts](const auto& name) -> auto&
+    auto getParamHelper = [&params, &apvts = this->apvts](const auto& name) -> auto&
     {
         return getParam(apvts, params, name);
     };
 
+    attackSlider.changeParam(&getParamHelper(Names::Attack_Mid_Band));
+    releaseSlider.changeParam(&getParamHelper(Names::Release_Mid_Band));
+    thresholdSlider.changeParam(&getParamHelper(Names::Threshold_Mid_Band));
+    ratioSlider.changeParam(&getParamHelper(Names::Ratio_Mid_Band));
+
+    // LABELS MIGHT NOT INCLUDE
+    //addLabelPairs(attackSlider.labels, getParamHelper(Names::Attack_Mid_Band), "ms");
+    //addLabelPairs(releaseSlider.labels, getParamHelper(Names::Release_Mid_Band), "ms");
+    //addLabelPairs(thresholdSlider.labels, getParamHelper(Names::Threshold_Mid_Band), "dB");
+    //addLabelPairs(ratioSlider.labels, getParamHelper(Names::Ratio_Mid_Band), "");
+
+    //ratioSlider.labels.add({0.f, "1:1" });
+    //auto ratioParam = dynamic_cast<juce::AudioParameterFloat*>(&getParamHelper(Names::Ratio_Mid_Band));
+    //ratioSlider.labels.add({ 1.f, juce::String(ratioParam->getMax(), 1) + ":1" });
 
 
-    auto makeAttachmentHelper = [&params, &apvts](auto& attachment, const auto& name, auto& slider)
+    auto makeAttachmentHelper = [&params, &apvts = this->apvts](auto& attachment, const auto& name, auto& slider)
     {
         makeAttachment(attachment, apvts, params, name, slider);
     };
@@ -495,10 +548,10 @@ GlobalControls::GlobalControls(juce::AudioProcessorValueTreeState& apvts)
     auto& gainOutParam = getParamHelper(Names::Gain_Out);
 
 
-    inGainSlider = std::make_unique<RSWL>(gainInParam, "dB", "Input Gain");
-    lowMidXoverSlider = std::make_unique<RSWL>(lowMidXoverParam, "Hz", "Low-Mid X-Over");
-    midHighXoverSlider = std::make_unique<RSWL>(midHighXoverParam, "Hz", "Mid-High X-Over");
-    outGainSlider = std::make_unique<RSWL>(gainOutParam, "dB", "Output Gain");
+    inGainSlider = std::make_unique<RSWL>(&gainInParam, "dB", "Input Gain");
+    lowMidXoverSlider = std::make_unique<RSWL>(&lowMidXoverParam, "Hz", "Low-Mid X-Over");
+    midHighXoverSlider = std::make_unique<RSWL>(&midHighXoverParam, "Hz", "Mid-High X-Over");
+    outGainSlider = std::make_unique<RSWL>(&gainOutParam, "dB", "Output Gain");
 
     auto makeAttachmentHelper = [&params, &apvts](auto& attachment, const auto& name, auto& slider)
         {
@@ -581,6 +634,9 @@ void GlobalControls::resized()
 SimpleMBCAudioProcessorEditor::SimpleMBCAudioProcessorEditor (SimpleMBCAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    setLookAndFeel(&lnf);
+
+
     addAndMakeVisible(controlBar);
     addAndMakeVisible(analyzer);
     addAndMakeVisible(globalControls);
@@ -591,6 +647,7 @@ SimpleMBCAudioProcessorEditor::SimpleMBCAudioProcessorEditor (SimpleMBCAudioProc
 
 SimpleMBCAudioProcessorEditor::~SimpleMBCAudioProcessorEditor()
 {
+    setLookAndFeel(nullptr);
 }
 
 

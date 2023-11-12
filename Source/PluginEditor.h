@@ -67,15 +67,24 @@ struct RotarySliderWithLabels : juce::Slider
     void paint(juce::Graphics& g) override;
     juce::Rectangle<int> getSliderBounds() const;
     int getTextHeight() const { return 14; }
-    juce::String getDisplayString() const;
-private:
-    //LookAndFeel lnf;
+    virtual juce::String getDisplayString() const;
+    
+    void changeParam(juce::RangedAudioParameter* p);
 
+
+
+protected:
     juce::RangedAudioParameter* param;
     juce::String suffix;
 };
 
-
+struct RatioSlider : RotarySliderWithLabels
+{
+    RatioSlider(juce::RangedAudioParameter* rap, const juce::String& unitSuffix) :
+        RotarySliderWithLabels(rap, unitSuffix, "Ratio") {}
+        
+    juce::String getDisplayString() const override;
+};  
 
 struct PowerButton : juce::ToggleButton { };
 
@@ -167,7 +176,10 @@ struct CompressorBandControls : juce::Component
     void paint(juce::Graphics& g) override;
 
 private:
-    RotarySlider attackSlider, releaseSlider, thresholdSlider, ratioSlider;
+    juce::AudioProcessorValueTreeState& apvts;
+
+    RotarySliderWithLabels attackSlider, releaseSlider, thresholdSlider ;
+    RatioSlider ratioSlider;
 
     using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     std::unique_ptr<Attachment> attackSliderAttachment,
@@ -214,8 +226,8 @@ public:
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
+    LookAndFeel lnf;
+
     SimpleMBCAudioProcessor& audioProcessor;
 
     Placeholder controlBar, analyzer;
