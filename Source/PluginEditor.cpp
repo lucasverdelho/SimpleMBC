@@ -157,6 +157,28 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 
         g.strokePath(analyzerButton->randomPath, PathStrokeType(1.f));
     }
+
+    else
+    {
+        auto bounds = toggleButton.getLocalBounds().reduced(2);
+
+        auto buttonIsOn = toggleButton.getToggleState();
+
+        // Rectangle itself
+        g.setColour(buttonIsOn ? accent_orange : Colours::darkgrey);
+        g.fillRect(bounds);
+
+        // Contour
+        g.setColour(Colours::black);
+        g.drawRect(bounds, 1.f);
+
+        // Text
+        g.setColour(buttonIsOn ? Colours::white : Colours::black);
+        g.drawFittedText(toggleButton.getName(),
+            			 bounds,
+            			 Justification::centred,
+            			 1);
+    }
 }
 
 
@@ -434,6 +456,16 @@ CompressorBandControls::CompressorBandControls(juce::AudioProcessorValueTreeStat
     addAndMakeVisible(thresholdSlider);
     addAndMakeVisible(ratioSlider);
 
+
+    bypassButton.setName("X");
+    soloButton.setName("S");
+    muteButton.setName("M");
+
+    addAndMakeVisible(bypassButton);
+    addAndMakeVisible(soloButton);
+    addAndMakeVisible(muteButton);
+
+
 }
 
 
@@ -442,6 +474,28 @@ void CompressorBandControls::resized()
 {
     using namespace juce;
     auto bounds = getLocalBounds().reduced(5);
+
+    auto createBandButtonControlBox = [](std::vector<Component*> comps)
+    {
+            FlexBox flexBox;
+            flexBox.flexDirection = FlexBox::Direction::column;
+            flexBox.flexWrap = FlexBox::Wrap::noWrap;
+
+            auto spacer = FlexItem().withHeight(1);
+
+            for (auto* comp : comps)
+            {
+				flexBox.items.add(spacer);
+				flexBox.items.add(FlexItem(*comp).withFlex(1.f));
+			}
+
+            flexBox.items.add(spacer);
+
+            return flexBox;
+    };
+
+    auto bandButtonControlBox = createBandButtonControlBox({ &bypassButton, &soloButton, &muteButton });
+
 
     FlexBox flexBox;
     flexBox.flexDirection = FlexBox::Direction::row;
@@ -463,8 +517,10 @@ void CompressorBandControls::resized()
 
 
     flexBox.items.add(FlexItem(ratioSlider).withFlex(1.f));
-    flexBox.items.add(endCap);
+    /*flexBox.items.add(endCap);*/
 
+    flexBox.items.add(spacer);
+    flexBox.items.add(FlexItem(bandButtonControlBox).withWidth(30.f));
 
     flexBox.performLayout(bounds);
 
@@ -576,6 +632,9 @@ GlobalControls::GlobalControls(juce::AudioProcessorValueTreeState& apvts)
     addAndMakeVisible(*lowMidXoverSlider);
     addAndMakeVisible(*midHighXoverSlider);
     addAndMakeVisible(*outGainSlider);
+
+
+
 }
 
 
@@ -637,8 +696,8 @@ SimpleMBCAudioProcessorEditor::SimpleMBCAudioProcessorEditor (SimpleMBCAudioProc
     setLookAndFeel(&lnf);
 
 
-    addAndMakeVisible(controlBar);
-    addAndMakeVisible(analyzer);
+    //addAndMakeVisible(controlBar);
+    //addAndMakeVisible(analyzer);
     addAndMakeVisible(globalControls);
     addAndMakeVisible(bandControls);
 
