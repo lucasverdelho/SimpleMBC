@@ -457,6 +457,7 @@ CompressorBandControls::CompressorBandControls(juce::AudioProcessorValueTreeStat
     addAndMakeVisible(ratioSlider);
 
 
+
     bypassButton.setName("X");
     soloButton.setName("S");
     muteButton.setName("M");
@@ -464,6 +465,30 @@ CompressorBandControls::CompressorBandControls(juce::AudioProcessorValueTreeStat
     addAndMakeVisible(bypassButton);
     addAndMakeVisible(soloButton);
     addAndMakeVisible(muteButton);
+
+    makeAttachmentHelper(bypassButtonAttachment, Names::Bypassed_Mid_Band, bypassButton);
+    makeAttachmentHelper(soloButtonAttachment, Names::Solo_Mid_Band, soloButton);
+    makeAttachmentHelper(muteButtonAttachment, Names::Mute_Mid_Band, muteButton);
+
+
+
+    lowBand.setName("Low");
+    midBand.setName("Mid");
+    highBand.setName("High");
+
+    addAndMakeVisible(lowBand);
+    addAndMakeVisible(midBand);
+    addAndMakeVisible(highBand);
+
+    lowBand.setRadioGroupId(1);
+    midBand.setRadioGroupId(1);
+    highBand.setRadioGroupId(1);
+
+    addAndMakeVisible(lowBand);
+    addAndMakeVisible(midBand);
+    addAndMakeVisible(highBand);
+
+
 
 
 }
@@ -495,7 +520,7 @@ void CompressorBandControls::resized()
     };
 
     auto bandButtonControlBox = createBandButtonControlBox({ &bypassButton, &soloButton, &muteButton });
-
+    auto bandSelectControlBox = createBandButtonControlBox({ &lowBand, &midBand, &highBand });
 
     FlexBox flexBox;
     flexBox.flexDirection = FlexBox::Direction::row;
@@ -504,7 +529,10 @@ void CompressorBandControls::resized()
     auto spacer = FlexItem().withWidth(4.f);
     auto endCap = FlexItem().withWidth(6.f);
 
-    flexBox.items.add(endCap);
+    //flexBox.items.add(endCap);
+    flexBox.items.add(FlexItem(bandSelectControlBox).withWidth(50.f));
+
+    flexBox.items.add(spacer);
     flexBox.items.add(FlexItem(attackSlider).withFlex(1.f));
     flexBox.items.add(spacer);
 
@@ -520,7 +548,7 @@ void CompressorBandControls::resized()
     /*flexBox.items.add(endCap);*/
 
     flexBox.items.add(spacer);
-    flexBox.items.add(FlexItem(bandButtonControlBox).withWidth(30.f));
+    flexBox.items.add(FlexItem(bandButtonControlBox).withWidth(40.f));
 
     flexBox.performLayout(bounds);
 
