@@ -9,34 +9,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-template<typename T>
-bool truncateKiloValue(T& value)
-{
-    if (value > static_cast<T>(999))
-    {   
-        value /= static_cast<T>(1000);
-        return true;
-    }
-    return false;
-}
 
 
-juce::String getValString(const juce::RangedAudioParameter& param, bool getLow, juce::String suffix) 
-{
-    juce::String str;
-
-    auto val = getLow ? param.getNormalisableRange().start : param.getNormalisableRange().end;
-
-    bool useK = truncateKiloValue(val);
-    str << val;
-
-    if (useK)
-        str << "k";
-
-    str << suffix;
-
-    return str;
-}
 
 
 
@@ -180,24 +154,6 @@ void CompressorBandControls::resized()
 
 
 
-void drawModulBackground(juce::Graphics &g, juce::Rectangle<int> bounds) 
-{
-    using namespace juce;
-    // Draw the background
-    g.setColour(border_mid_gray);
-    g.fillAll();
-
-    auto localBounds = bounds;
-
-    // Draw the body
-    bounds.reduce(3, 3);
-    g.setColour(body_gray);
-    g.fillRoundedRectangle(bounds.toFloat(), 3.f);
-
-    // Border between components
-    g.setColour(border_mid_gray); // Mid gray for testing
-    g.drawRect(localBounds);
-}
 
 
 
