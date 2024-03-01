@@ -21,6 +21,14 @@
 #define accent_blue juce::Colour(0xff33bfdb)
 
 
+#define MIN_FREQUENCY 20.0f
+#define MAX_FREQUENCY 20000.0f
+
+#define NEGATIVE_INFINITY -72.0f
+#define MAX_DECIBELS 12.0f
+
+#define MIN_THRESHOLD -60.0f
+
 
 
 enum FFTOrder
