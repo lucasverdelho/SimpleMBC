@@ -8,7 +8,6 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "DSP/Params.h"
 
 
 
@@ -28,6 +27,8 @@ SimpleMBCAudioProcessorEditor::SimpleMBCAudioProcessorEditor (SimpleMBCAudioProc
     addAndMakeVisible(bandControls);
 
     setSize (600, 500);
+
+    startTimerHz(60);
 }
 
 SimpleMBCAudioProcessorEditor::~SimpleMBCAudioProcessorEditor()
@@ -57,4 +58,21 @@ void SimpleMBCAudioProcessorEditor::resized()
     analyzer.setBounds(bounds.removeFromTop(225));
 
     globalControls.setBounds(bounds);
+}
+
+
+
+void SimpleMBCAudioProcessorEditor::timerCallback()
+{
+    std::vector<float> values
+    {
+        audioProcessor.lowBandComp.getRMSInputLevelDb(),
+        audioProcessor.lowBandComp.getRMSOutputLevelDb(),
+        audioProcessor.midBandComp.getRMSInputLevelDb(),
+        audioProcessor.midBandComp.getRMSOutputLevelDb(),
+        audioProcessor.highBandComp.getRMSInputLevelDb(),
+        audioProcessor.highBandComp.getRMSOutputLevelDb()
+    };
+
+    analyzer.update(values);
 }

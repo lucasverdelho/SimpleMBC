@@ -24,7 +24,7 @@
 //==============================================================================
 /**
 */
-class SimpleMBCAudioProcessorEditor  : public juce::AudioProcessorEditor
+class SimpleMBCAudioProcessorEditor  : public juce::AudioProcessorEditor, juce::Timer
 {
 public:
     SimpleMBCAudioProcessorEditor (SimpleMBCAudioProcessor&);
@@ -33,6 +33,8 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+
+    void timerCallback() override;
 
 private:
     LookAndFeel lnf;
