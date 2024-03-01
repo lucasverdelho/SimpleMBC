@@ -4,6 +4,8 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="s5qYlY" name="SimpleMBC">
     <GROUP id="{EEF70A74-C34A-70C7-2576-7EED6195E024}" name="Source">
+      <FILE id="SxPlwL" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
+      <FILE id="inLpnZ" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
       <FILE id="jzeDnp" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="TV2Mbi" name="PluginProcessor.h" compile="0" resource="0"
