@@ -9,7 +9,8 @@
 */
 
 #include "LookAndFeel.h"
-
+#include "RotarySliderWithLabels.h"
+#include "CustomButtons.h"
 
 void LookAndFeel::drawRotarySlider(juce::Graphics& g,
     int x,

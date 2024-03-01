@@ -10,6 +10,10 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "LookAndFeel.h"
+#include "GlobalControls.h"
+#include "CompressorBandControls.h"
+#include "UtilityComponents.h"
 
 // Colours from ableton dark theme
 

@@ -11,6 +11,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "RotarySliderWithLabels.h"
+
 
 
 struct CompressorBandControls : juce::Component

@@ -9,7 +9,7 @@
 */
 
 #include "RotarySliderWithLabels.h"
-
+#include "Utilities.h"
 
 void RotarySliderWithLabels::paint(juce::Graphics& g)
 {

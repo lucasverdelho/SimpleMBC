@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-
+#include "RotarySliderWithLabels.h"
 
 struct GlobalControls : juce::Component
 {
