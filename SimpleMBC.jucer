@@ -4,6 +4,8 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="s5qYlY" name="SimpleMBC">
     <GROUP id="{EEF70A74-C34A-70C7-2576-7EED6195E024}" name="Source">
+      <FILE id="Oh8Xm8" name="Params.cpp" compile="1" resource="0" file="Source/Params.cpp"/>
+      <FILE id="hVCHoM" name="Params.h" compile="0" resource="0" file="Source/Params.h"/>
       <FILE id="abuEnR" name="GlobalControls.cpp" compile="1" resource="0"
             file="Source/GlobalControls.cpp"/>
       <FILE id="oZcCEO" name="GlobalControls.h" compile="0" resource="0"
