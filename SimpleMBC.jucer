@@ -4,6 +4,10 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="s5qYlY" name="SimpleMBC">
     <GROUP id="{EEF70A74-C34A-70C7-2576-7EED6195E024}" name="Source">
+      <FILE id="j8jtpW" name="CompressorBandControls.cpp" compile="1" resource="0"
+            file="Source/CompressorBandControls.cpp"/>
+      <FILE id="TYcPQt" name="CompressorBandControls.h" compile="0" resource="0"
+            file="Source/CompressorBandControls.h"/>
       <FILE id="lKrNpn" name="Utilities.cpp" compile="1" resource="0" file="Source/Utilities.cpp"/>
       <FILE id="vQdlXj" name="Utilities.h" compile="0" resource="0" file="Source/Utilities.h"/>
       <FILE id="ihT10R" name="UtilityComponents.cpp" compile="1" resource="0"
