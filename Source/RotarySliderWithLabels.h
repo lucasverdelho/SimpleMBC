@@ -21,11 +21,7 @@
 #define accent_orange juce::Colour(0xfff39420)
 #define accent_blue juce::Colour(0xff33bfdb)
 
-
-
-
-
-
+ 
 
 
 struct RotarySliderWithLabels : juce::Slider
@@ -77,4 +73,3 @@ struct RatioSlider : RotarySliderWithLabels
     juce::String getDisplayString() const override;
 };
 
-struct PowerButton : juce::ToggleButton { };

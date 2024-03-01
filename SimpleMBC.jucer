@@ -4,6 +4,9 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="s5qYlY" name="SimpleMBC">
     <GROUP id="{EEF70A74-C34A-70C7-2576-7EED6195E024}" name="Source">
+      <FILE id="xCifZX" name="CustomButtons.cpp" compile="1" resource="0"
+            file="Source/CustomButtons.cpp"/>
+      <FILE id="jc8HYj" name="CustomButtons.h" compile="0" resource="0" file="Source/CustomButtons.h"/>
       <FILE id="g0KMmp" name="RotarySliderWithLabels.cpp" compile="1" resource="0"
             file="Source/RotarySliderWithLabels.cpp"/>
       <FILE id="Js8zbH" name="RotarySliderWithLabels.h" compile="0" resource="0"
