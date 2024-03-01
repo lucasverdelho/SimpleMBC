@@ -8,7 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "Params.h"
+#include "DSP/Params.h"
 
 //==============================================================================
 SimpleMBCAudioProcessor::SimpleMBCAudioProcessor()

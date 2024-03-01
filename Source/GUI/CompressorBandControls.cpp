@@ -10,7 +10,7 @@
 
 #include "CompressorBandControls.h"
 #include "Utilities.h"
-#include "Params.h"
+#include "../DSP/Params.h"
 
 CompressorBandControls::CompressorBandControls(juce::AudioProcessorValueTreeState& apv) :
     apvts(apv),
