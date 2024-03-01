@@ -200,6 +200,7 @@ void SimpleMBCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 
     leftChannelFifo.prepare(samplesPerBlock);
 	rightChannelFifo.prepare(samplesPerBlock);
+
 }
 
 
