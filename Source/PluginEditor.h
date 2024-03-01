@@ -20,6 +20,16 @@
 #define accent_blue juce::Colour(0xff33bfdb)
 
 
+struct ControlBar : juce::Component
+{
+    ControlBar();
+
+    void resized() override;
+
+    AnalyzerButton analyzerButton;
+    PowerButton globalBypassButton;
+};
+
 
 //==============================================================================
 /**
@@ -41,11 +51,14 @@ private:
 
     SimpleMBCAudioProcessor& audioProcessor;
 
-    Placeholder controlBar;
+    ControlBar controlBar;
     GlobalControls globalControls { audioProcessor.apvts };
     CompressorBandControls bandControls { audioProcessor.apvts };
     SpectrumAnalyzer analyzer { audioProcessor };
 
+    void toggleGlobalBypassState();
+
+    std::array<juce::AudioParameterBool*, 3> getBypassParams();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleMBCAudioProcessorEditor)
 };
