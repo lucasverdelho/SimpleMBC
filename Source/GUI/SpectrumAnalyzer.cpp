@@ -73,7 +73,7 @@ void SpectrumAnalyzer::paint(juce::Graphics& g)
 
     g.setColour(Colours::black);
 
-    g.fillPath(border);
+    //g.fillPath(border);
 
     drawTextLabels(g, bounds);
 
