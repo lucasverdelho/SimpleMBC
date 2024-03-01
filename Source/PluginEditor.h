@@ -23,25 +23,6 @@
 
 
 //==============================================================================
-struct Placeholder : juce::Component
-{
-    Placeholder();
-
-    void paint(juce::Graphics& g) override
-    {
-		g.fillAll(customColour);
-	}
-    juce::Colour customColour;
-};
-
-
-struct RotarySlider : juce::Slider
-{
-    RotarySlider() :
-        juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
-            juce::Slider::TextEntryBoxPosition::NoTextBox)
-    {}
-};
 
 template<typename Attachment, typename APVTS, typename Params, typename ParamName, typename SliderType>
 void makeAttachment(std::unique_ptr<Attachment>& attachment, 

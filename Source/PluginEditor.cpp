@@ -40,55 +40,8 @@ juce::String getValString(const juce::RangedAudioParameter& param, bool getLow, 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //==============================================================================
 
-
-
-
-
-
-
-//==============================================================================
-
-Placeholder::Placeholder()
-{
-    juce::Random r;
-    customColour = juce::Colour(r.nextInt(255), r.nextInt(255), r.nextInt(255));
-}
 
 
 
