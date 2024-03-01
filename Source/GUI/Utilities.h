@@ -18,6 +18,7 @@
 #define body_gray juce::Colour(0xff373737)
 #define box_gray juce::Colour(0xff444444)
 #define accent_orange juce::Colour(0xfff39420)
+#define muted_blue juce::Colour(0xff88bfdb)
 #define accent_blue juce::Colour(0xff33bfdb)
 
 
