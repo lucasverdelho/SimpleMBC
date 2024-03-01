@@ -20,7 +20,7 @@
 #define accent_orange juce::Colour(0xfff39420)
 #define muted_blue juce::Colour(0xff88bfdb)
 #define accent_blue juce::Colour(0xff33bfdb)
-
+#define black_gray juce::Colour(0xff1e1e1e)
 
 #define MIN_FREQUENCY 20.0f
 #define MAX_FREQUENCY 20000.0f

@@ -41,7 +41,7 @@ juce::Rectangle<int> drawModuleBackground(juce::Graphics& g, juce::Rectangle<int
 
     // Draw the body
     bounds.reduce(3, 3);
-    g.setColour(body_gray);
+    g.setColour(body_gray); // black_gray looks good too
     g.fillRoundedRectangle(bounds.toFloat(), 3.f);
 
     // Border between components

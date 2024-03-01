@@ -71,13 +71,12 @@ void SpectrumAnalyzer::drawFFTAnalysis(juce::Graphics& g, juce::Rectangle<int> b
     auto leftChannelFFTPath = leftPathProducer.getPath();
     leftChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), 0));//responseArea.getY()));
 
-    g.setColour(Colour(97u, 18u, 167u)); //purple-
+    g.setColour(accent_blue);
     g.strokePath(leftChannelFFTPath, PathStrokeType(1.f));
 
     auto rightChannelFFTPath = rightPathProducer.getPath();
     rightChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), 0));// responseArea.getY()));
 
-    g.setColour(Colour(215u, 201u, 134u));
     g.strokePath(rightChannelFFTPath, PathStrokeType(1.f));
 
 }
@@ -152,7 +151,7 @@ void SpectrumAnalyzer::drawCrossovers(juce::Graphics& g, juce::Rectangle<int> bo
 	};
     
     auto zeroDb = mapY(0.f);
-    g.setColour(Colours::darkblue.withAlpha(0.3f));
+    g.setColour(Colours::lightgrey.withAlpha(0.3f));
     g.fillRect(Rectangle<float>::leftTopRightBottom(left, zeroDb, lowMidX, mapY(lowBandGR)));
     g.fillRect(Rectangle<float>::leftTopRightBottom(lowMidX, zeroDb, midHighX, mapY(midBandGR)));
     g.fillRect(Rectangle<float>::leftTopRightBottom(midHighX, zeroDb, right, mapY(highBandGR)));
@@ -257,7 +256,7 @@ void SpectrumAnalyzer::drawBackgroundGrid(juce::Graphics& g, juce::Rectangle<int
     {
         auto y = jmap(gDb, NEGATIVE_INFINITY, MAX_DECIBELS, float(bottom), float(top));
 
-        g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::darkgrey);
+        g.setColour(gDb == 0.f ? accent_orange: Colours::darkgrey);
         g.drawHorizontalLine(y, left, right);
     }
 }
@@ -328,7 +327,7 @@ void SpectrumAnalyzer::drawTextLabels(juce::Graphics& g, juce::Rectangle<int> bo
         r.setX(bounds.getRight() - textWidth);
         r.setCentre(r.getCentreX(), y);
 
-        g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::lightgrey);
+        g.setColour(gDb == 0.f ? accent_orange : Colours::lightgrey);
 
         g.drawFittedText(str, r, juce::Justification::centredLeft, 1);
 
