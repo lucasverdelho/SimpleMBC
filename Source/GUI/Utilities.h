@@ -21,6 +21,18 @@
 #define accent_blue juce::Colour(0xff33bfdb)
 
 
+
+
+enum FFTOrder
+{
+    order2048 = 11,
+    order4096 = 12,
+    order8192 = 13
+};
+
+
+
+
 template<typename Attachment, typename APVTS, typename Params, typename ParamName, typename SliderType>
 void makeAttachment(std::unique_ptr<Attachment>& attachment,
     APVTS& apvts,
@@ -70,4 +82,4 @@ void addLabelPairs(Labels& labels, const ParamType& param, const SuffixType& suf
 }
 
 
-void drawModulBackground(juce::Graphics& g, juce::Rectangle<int> bounds);
+void drawModuleBackground(juce::Graphics& g, juce::Rectangle<int> bounds);

@@ -138,7 +138,7 @@ void CompressorBandControls::paint(juce::Graphics& g)
 {
     auto bounds = getLocalBounds();
 
-    drawModulBackground(g, bounds);
+    drawModuleBackground(g, bounds);
 }
 
 
