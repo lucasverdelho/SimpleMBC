@@ -26,6 +26,7 @@ The design of this plugin is influenced by the Dark theme Design language of Abl
 - [x] Make Spectrum Analyzer Background a much darker gray in order to improve contrast
 - [x] Fix Control Bar Appearance
 - [x] Change the Power Button to Abletons style (an orange circle with a thin black outline)
+- [ ] Analyzer Button needs to be slightly to the right
 - [ ] Search for a better font for the buttons
 - [ ] Make the font bold in the band select buttons as well as their respective bypass, solo and mute buttons
 - [ ] Make the Spectrum Analyzer Graph rounder, maybe using bezier curves
