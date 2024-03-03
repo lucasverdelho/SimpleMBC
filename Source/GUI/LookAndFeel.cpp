@@ -82,38 +82,55 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 {
     using namespace juce;
 
+    // Old Power Button
+    //if (auto* pb = dynamic_cast<PowerButton*>(&toggleButton))
+    //{
+    //    Path powerButton;
+
+    //    auto bounds = toggleButton.getLocalBounds();
+
+    //    auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
+    //    auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+
+    //    float ang = 30.f; //30.f;
+
+    //    size -= 6;
+
+    //    powerButton.addCentredArc(r.getCentreX(),
+    //        r.getCentreY(),
+    //        size * 0.5,
+    //        size * 0.5,
+    //        0.f,
+    //        degreesToRadians(ang),
+    //        degreesToRadians(360.f - ang),
+    //        true);
+
+    //    powerButton.startNewSubPath(r.getCentreX(), r.getY());
+    //    powerButton.lineTo(r.getCentre());
+
+    //    PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
+
+    //    auto color = toggleButton.getToggleState() ? Colours::dimgrey : accent_blue;
+
+    //    g.setColour(color);
+    //    g.strokePath(powerButton, pst);
+    //    g.drawEllipse(r, 2);
+    //}
+    // Ableton Power Button
     if (auto* pb = dynamic_cast<PowerButton*>(&toggleButton))
     {
-        Path powerButton;
-
         auto bounds = toggleButton.getLocalBounds();
-
-        auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
+        auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 12;
         auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
 
-        float ang = 30.f; //30.f;
+        Path powerButton;
+        powerButton.addEllipse(r);
 
-        size -= 6;
-
-        powerButton.addCentredArc(r.getCentreX(),
-            r.getCentreY(),
-            size * 0.5,
-            size * 0.5,
-            0.f,
-            degreesToRadians(ang),
-            degreesToRadians(360.f - ang),
-            true);
-
-        powerButton.startNewSubPath(r.getCentreX(), r.getY());
-        powerButton.lineTo(r.getCentre());
-
-        PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
-
-        auto color = toggleButton.getToggleState() ? Colours::dimgrey : accent_blue;
+        auto color = toggleButton.getToggleState() ? Colours::dimgrey : accent_orange;
 
         g.setColour(color);
-        g.strokePath(powerButton, pst);
-        g.drawEllipse(r, 2);
+        g.fillPath(powerButton);
+        g.drawEllipse(r, 4);
     }
     else if (auto* analyzerButton = dynamic_cast<AnalyzerButton*>(&toggleButton))
     {
