@@ -242,6 +242,10 @@ void SpectrumAnalyzer::drawBackgroundGrid(juce::Graphics& g, juce::Rectangle<int
     auto bottom = renderArea.getBottom();
     auto width = renderArea.getWidth();
 
+    // Fill the background inside the renderArea with black
+    g.setColour(black_gray);
+    g.fillRect(renderArea);
+
     auto xs = getXs(freqs, left, width);
 
     g.setColour(Colours::dimgrey);

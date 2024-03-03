@@ -12,7 +12,6 @@
 
 #include <JuceHeader.h>
 
-
 struct PowerButton : juce::ToggleButton { };
 
 

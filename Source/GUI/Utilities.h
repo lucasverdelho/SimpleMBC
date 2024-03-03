@@ -88,6 +88,7 @@ void addLabelPairs(Labels& labels, const ParamType& param, const SuffixType& suf
     labels.clear();
     labels.add({ 0.f, getValString(param, true, suffix) });
     labels.add({ 1.f, getValString(param, false, suffix) });
+
 }
 
 

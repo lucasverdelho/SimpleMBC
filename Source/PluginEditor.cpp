@@ -19,6 +19,11 @@ ControlBar::ControlBar()
     addAndMakeVisible(globalBypassButton);
 }
 
+void ControlBar::paint(juce::Graphics& g)
+{
+	drawModuleBackground(g, getLocalBounds());
+}
+
 void ControlBar::resized()
 {
 	auto bounds = getLocalBounds();

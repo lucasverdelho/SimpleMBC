@@ -109,7 +109,7 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 
         PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
 
-        auto color = toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
+        auto color = toggleButton.getToggleState() ? Colours::dimgrey : accent_blue;
 
         g.setColour(color);
         g.strokePath(powerButton, pst);
@@ -117,7 +117,7 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
     }
     else if (auto* analyzerButton = dynamic_cast<AnalyzerButton*>(&toggleButton))
     {
-        auto color = !toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
+        auto color = !toggleButton.getToggleState() ? Colours::dimgrey : accent_blue;
 
         g.setColour(color);
 
