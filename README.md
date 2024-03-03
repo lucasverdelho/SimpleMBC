@@ -17,7 +17,7 @@ This project presents a straightforward realization of a multiband compressor ut
 
 The design of this plugin is influenced by the Dark theme Design language of Ableton Live, featuring only two colors and various shades of gray. Adhering to Ableton's design language has been a gratifying learning experience, aligning seamlessly with the plugin's purpose by embodying a simple and clean design aesthetic. Areas for potential enhancement in the future include refining the font of the buttons and adjusting the curvature of the spectrum analyzer graph.
 
-![First Version Prototype](https://github.com/lucasverdelho/SimpleMBC/blob/main/Img/Version3.png)
+![First Version Prototype](https://github.com/lucasverdelho/SimpleMBC/blob/main/Img/Version4.png)
 
 # TODO
 
