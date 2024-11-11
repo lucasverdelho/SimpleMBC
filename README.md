@@ -2,20 +2,13 @@
 
 ## Introduction
 
-This project presents a straightforward realization of a multiband compressor utilizing the JUCE framework. The primary objective of this endeavor was to delve into a more intricate and interconnected project design, encompassing both enhanced functionality and an intuitive graphical user interface (GUI). As my second project employing JUCE, I have observed significant advancements in my comprehension of the framework, reflected in the refined final outcome.
-
-## Features
-
+This is a basic implementation of a multiband compressor utilizing the JUCE framework. 
 - A three-band compressor with threshold, ratio and attack
 - Global Gain Controls
 - A Spectrum Analyzer
 - Bypass, Solo, and Mute Buttons for each band
 - Customizable crossover frequencies
-- Simple and clean design
-
-## Design
-
-The design of this plugin is influenced by the Dark theme Design language of Ableton Live, featuring only two colors and various shades of gray. Adhering to Ableton's design language has been a gratifying learning experience, aligning seamlessly with the plugin's purpose by embodying a simple and clean design aesthetic. Areas for potential enhancement in the future include refining the font of the buttons and adjusting the curvature of the spectrum analyzer graph.
+- Ableton Live inspired design
 
 ![First Version Prototype](https://github.com/lucasverdelho/SimpleMBC/blob/main/Img/Version4.png)
 
